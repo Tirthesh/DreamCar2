@@ -1,0 +1,72 @@
+Have studied the requirement of the test. And as instructed, have attempted to complete as much as could - limited by time. Have described the requirements as bigger picture - that can be implemented to achieve. Basically the following would be the basic structure:
+
+A). Requirement:
+
+	1). Search Page
+	2). Search Result Listing Page
+	3). Product Details with Seller Reviews
+	4). Submit an inquiry
+
+B). Database Tables required:
+	(as defined in Database/Migrations)
+	Product Categories
+	Product
+	Product Details
+	Product Images
+	Product Reviews
+	Seller
+	Seller Reviews
+	Buyer Details
+	Inquiry
+	Emails
+	Logs (Search/Query Logs, Access Logs, Inquiry Logs, Email Logs)
+
+C). Modules Required:
+	Product
+	Image Processing
+	Seller
+	Reviews
+	Buyers
+	Inquiry
+	Mail Queues
+	Logs
+	Search
+	Keyword
+
+D). Tools/Libraries:
+	Image Processing
+	Mail Queuing
+	Logs Management
+	Authentication
+	SearchEngine
+	UnitTesting
+	Code Reviewing - (eg. SONAR)
+
+Have used Laravel framework to quickly achieve the requirements as a small module and keeping in mind - the framework can give more robustness to extend any module to a big scale project. The project attached includes Product, Category, Seller, Reviews modules with relationships.
+
+if we consider the requirement at a bigger scale, I may suggest different architecture. That includes multiple infrastructure options, multiple database tools, caching, queuing, etc. Either we can use an established product like Magento or can also start from scratch.
+
+The following can be the proposed solution:
+
+1) Application server (PHP + Magento) -- where our application resides with web server
+2) DB server (mysql)-- relational db / master db to store all relations and use Ids in other dbs
+3) MongoDB --  all nosql data to be stored here like different features of Listing
+4) Redis / Memcache -- caching server for faster retrival when user search for Listing
+5) Image server -- We store all images here with raw and thumbnails
+6) Email server
+
+- Define main categories in Mysql tables like Truck, Motorcycle, Car etc
+
+Data Management
+---------------
+ - When seller of Listing saves data in Application, we took all maximum information which will help us in demostrating data for seller like USPs.
+    - We store buyer and seller Basic information in Mysql
+    - We store Detailed information for buyer and seller on MongoDB with reference Mysql Ids
+    - Basic Listing information will be stored in Mysql
+    - Detailed information of Listings along with Mysql Id will be stored in MongoDB
+    - For faster retrival of data we use Caching server like Redis holding all keyword information of Listing with reference Mysql Id [we have added at time of Creating]
+    - At time of Creating Listing we take maximum Images from Seller and store in separate server along with Thumbnails and Raw Images. We store just path of particular folder in Mysql
+    - Can use multiple schemas for different purpose like storing additional images path, etc.
+    - Can use SearchEngine tools  - like LUCENE - to enhance the search experience for the Framework we use.
+    
+A strong architecture with Web & App servers (NGNIX & APACHE) & proper management with Load Balancers can give better approach.
